@@ -53,11 +53,13 @@ spec:
       serviceAccountName: default
       {{- end }}
       terminationGracePeriodSeconds: 5
+      {{- if .Values.securityContext.enable }}
       securityContext:
         fsGroup: 1000
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
+      {{- end }}
         {{- if .Values.seccompProfile.enable }}
         seccompProfile:
           type: {{ .Values.seccompProfile.type }}
@@ -229,6 +231,7 @@ spec:
       {{- else }}
       serviceAccountName: default
       {{- end }}
+      {{- if .Values.securityContext.enable }}
       securityContext:
         fsGroup: 1000
         runAsGroup: 1000
@@ -238,6 +241,7 @@ spec:
         seccompProfile:
           type: {{ .Values.seccompProfile.type }}
         {{- end }}
+      {{- end }}
       containers:
       - name: redis
         securityContext:
@@ -248,7 +252,7 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
         {{- if .Values.cartDatabase.inClusterRedis.publicRepository }}
-        image: redis:alpine@sha256:a40e29800d387e3cf9431902e1e7a362e4d819233d68ae39380532c3310091ac
+        image: redis:alpine@sha256:1bf97f21f01b0e7bd4b7b34a26d3b9d8086e41e70c10f262e8a9e0b49b5116a0
         {{- else }}
         image: {{ .Values.images.repository }}/redis:alpine
         {{- end }}
